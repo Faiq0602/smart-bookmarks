@@ -1,4 +1,13 @@
-export default function Home() {
+import { AuthButton } from "@/components/auth-button";
+import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+
+export default async function Home() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <div className="min-h-screen bg-zinc-100">
       <header className="border-b border-zinc-200 bg-white">
@@ -8,16 +17,10 @@ export default function Home() {
               Smart Bookmarks
             </p>
             <p className="text-xs text-zinc-500">
-              PR 1 scaffold: auth and data wiring comes next
+              {user ? `Signed in as ${user.email}` : "Sign in to manage bookmarks"}
             </p>
           </div>
-          <button
-            type="button"
-            className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
-            disabled
-          >
-            Sign in with Google (next PR)
-          </button>
+          <AuthButton isAuthenticated={Boolean(user)} />
         </div>
       </header>
 
@@ -27,20 +30,27 @@ export default function Home() {
             Private Bookmark Manager
           </h1>
           <p className="mt-2 text-sm text-zinc-600">
-            This baseline sets up Next.js + Tailwind + Supabase client helpers.
-            Google login, database, and realtime updates are implemented in
-            upcoming PRs.
+            Sign in with Google to access your private bookmarks. Data model and
+            realtime sync are added in upcoming PRs.
           </p>
+          {user ? (
+            <Link
+              href="/bookmarks"
+              className="mt-4 inline-block rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white"
+            >
+              Go to bookmarks
+            </Link>
+          ) : null}
         </section>
 
         <section className="rounded-lg border border-zinc-200 bg-white p-5">
           <h2 className="text-base font-semibold text-zinc-900">
-            Bookmarks (placeholder)
+            Current Status
           </h2>
           <div className="mt-4 rounded-md border border-dashed border-zinc-300 bg-zinc-50 p-4">
             <p className="text-sm text-zinc-600">
-              No bookmark data yet. CRUD + realtime list rendering will be added
-              after auth and RLS setup.
+              OAuth authentication is enabled in this PR. Bookmark CRUD, row
+              security policies, and realtime updates come next.
             </p>
           </div>
         </section>
