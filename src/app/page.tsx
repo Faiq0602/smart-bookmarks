@@ -31,7 +31,7 @@ export default async function Home() {
           </h1>
           <p className="mt-2 text-sm text-zinc-600">
             Sign in with Google to access your private bookmarks. Data model and
-            realtime sync are added in upcoming PRs.
+            storage are now active. Realtime sync is coming soon.
           </p>
           {user ? (
             <Link
@@ -49,8 +49,8 @@ export default async function Home() {
           </h2>
           <div className="mt-4 rounded-md border border-dashed border-zinc-300 bg-zinc-50 p-4">
             <p className="text-sm text-zinc-600">
-              OAuth authentication is enabled in this PR. Bookmark CRUD, row
-              security policies, and realtime updates come next.
+              OAuth auth and database-backed bookmark create/read are complete.
+              Realtime updates and richer interactions are coming soon.
             </p>
           </div>
         </section>
