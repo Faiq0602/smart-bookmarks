@@ -1,4 +1,5 @@
 import { AuthButton } from "@/components/auth-button";
+import { RealtimeBookmarksSync } from "@/components/realtime-bookmarks-sync";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -52,6 +53,37 @@ async function addBookmark(formData: FormData) {
   redirect("/bookmarks");
 }
 
+async function deleteBookmark(formData: FormData) {
+  "use server";
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/");
+  }
+
+  const id = String(formData.get("id") ?? "").trim();
+
+  if (!id) {
+    redirect("/bookmarks?error=Could+not+delete+bookmark");
+  }
+
+  const { error } = await supabase
+    .from("bookmarks")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) {
+    redirect("/bookmarks?error=Could+not+delete+bookmark");
+  }
+
+  redirect("/bookmarks");
+}
+
 export default async function BookmarksPage({
   searchParams,
 }: {
@@ -95,9 +127,10 @@ export default async function BookmarksPage({
             Your Bookmarks
           </h1>
           <p className="mt-2 text-sm text-zinc-600">
-            Database-backed bookmarks are now live. Realtime sync and advanced
-            interactions are coming soon.
+            Add, remove, and manage your bookmarks with live updates across
+            open sessions.
           </p>
+          <RealtimeBookmarksSync userId={user.id} />
         </section>
 
         <section className="mb-6 rounded-lg border border-zinc-200 bg-white p-5">
@@ -150,15 +183,28 @@ export default async function BookmarksPage({
             <ul className="mt-4 space-y-3">
               {(bookmarks as Bookmark[]).map((bookmark) => (
                 <li key={bookmark.id} className="rounded-md border border-zinc-200 p-3">
-                  <p className="text-sm font-semibold text-zinc-900">{bookmark.title}</p>
-                  <a
-                    href={bookmark.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-1 block text-sm text-zinc-700 underline break-all"
-                  >
-                    {bookmark.url}
-                  </a>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-zinc-900">{bookmark.title}</p>
+                      <a
+                        href={bookmark.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-1 block text-sm text-zinc-700 underline break-all"
+                      >
+                        {bookmark.url}
+                      </a>
+                    </div>
+                    <form action={deleteBookmark}>
+                      <input type="hidden" name="id" value={bookmark.id} />
+                      <button
+                        type="submit"
+                        className="rounded-md border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-900"
+                      >
+                        Delete
+                      </button>
+                    </form>
+                  </div>
                 </li>
               ))}
             </ul>

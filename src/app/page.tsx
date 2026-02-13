@@ -31,7 +31,7 @@ export default async function Home() {
           </h1>
           <p className="mt-2 text-sm text-zinc-600">
             Sign in with Google to access your private bookmarks. Data model and
-            storage are now active. Realtime sync is coming soon.
+            storage are now active, with live updates between open sessions.
           </p>
           {user ? (
             <Link
@@ -49,8 +49,8 @@ export default async function Home() {
           </h2>
           <div className="mt-4 rounded-md border border-dashed border-zinc-300 bg-zinc-50 p-4">
             <p className="text-sm text-zinc-600">
-              OAuth auth and database-backed bookmark create/read are complete.
-              Realtime updates and richer interactions are coming soon.
+              OAuth auth and bookmark create/read/delete with live updates are
+              active.
             </p>
           </div>
         </section>
