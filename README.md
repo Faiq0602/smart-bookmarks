@@ -3,7 +3,9 @@
 A simple private bookmark manager built with Next.js App Router + Supabase.
 
 
-
+# Live Vercel Link
+- https://smart-bookmarks-phi.vercel.app/
+  
 ## Features Implemented
 
 - Google OAuth login/signup only (no email/password flow)
