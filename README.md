@@ -3,7 +3,9 @@
 A simple private bookmark manager built with Next.js App Router + Supabase.
 
 
-
+# Live Vercel Link
+- https://smart-bookmarks-phi.vercel.app/
+  
 ## Features Implemented
 
 - Google OAuth login/signup only (no email/password flow)
@@ -135,9 +137,6 @@ I moved all create/delete logic to server actions with explicit session checks, 
 Without strict policies, features can "work" in development but be insecure.
 I enforced per-user policies for select/insert/update/delete and validated behavior by signing in with different accounts and confirming data isolation.
 
-4. Keeping product copy professional during iterative PR development.
-During development I had internal PR-language in UI text, which is fine for milestones but not for a final impression.
-I replaced those with user-facing copy so the app reads like a product, not a sprint board.
 
 ## Verification Done
 
