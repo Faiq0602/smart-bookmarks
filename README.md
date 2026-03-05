@@ -8,6 +8,7 @@ A simple private bookmark manager built with Next.js App Router + Supabase.
 
 - Google OAuth login/signup only (no email/password flow)
 - Authenticated users can add bookmarks (title + URL)
+- AI-generated bookmark summary and tags (Gemini)
 - Authenticated users can delete their own bookmarks
 - Bookmarks are private per user via Supabase Row Level Security (RLS)
 - Realtime bookmark updates across tabs without manual refresh
@@ -33,6 +34,8 @@ npm install
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-2.0-flash
 ```
 
 3. Run development server:
@@ -91,6 +94,24 @@ using (auth.uid() = user_id);
 
 alter publication supabase_realtime add table public.bookmarks;
 alter table public.bookmarks replica identity full;
+```
+
+If you already created the table earlier, run this migration too:
+
+```sql
+alter table public.bookmarks
+  add column if not exists ai_summary text,
+  add column if not exists ai_tags text[] not null default '{}'::text[],
+  add column if not exists ai_status text not null default 'pending',
+  add column if not exists ai_error text,
+  add column if not exists ai_generated_at timestamptz;
+
+alter table public.bookmarks
+  drop constraint if exists bookmarks_ai_status_check;
+
+alter table public.bookmarks
+  add constraint bookmarks_ai_status_check
+  check (ai_status in ('pending','processing','done','failed'));
 ```
 
 Also set Google OAuth in Supabase Auth and include:

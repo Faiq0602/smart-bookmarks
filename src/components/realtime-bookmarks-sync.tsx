@@ -74,5 +74,5 @@ export function RealtimeBookmarksSync({ userId }: RealtimeBookmarksSyncProps) {
     };
   }, [router, userId]);
 
-  return <p className="mt-2 text-xs text-zinc-500">Live updates are enabled.</p>;
+  return null;
 }
